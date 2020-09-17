@@ -20,7 +20,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+
 class ItemListSerializer(serializers.ModelSerializer):
+    added_by = UserSerializer()
     detail = serializers.HyperlinkedIdentityField(
         view_name = "api-detail",
         lookup_field = "id",
@@ -28,7 +35,7 @@ class ItemListSerializer(serializers.ModelSerializer):
         )
     class Meta:
         model = Item
-        fields = ['name', 'detail']
+        fields = ['name', 'detail', 'added_by']
 
 
 
