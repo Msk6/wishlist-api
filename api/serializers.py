@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from items.models import Item
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = User
         fields = ['username', 'password', 'first_name', 'last_name']
-        
+
     def create(self, validated_data):
         username = validated_data['username']
         password = validated_data['password']
@@ -16,3 +18,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         new_user.set_password(password)
         new_user.save()
         return validated_data
+
+
+class ItemListSerializer(serializers.ModelSerializer):
+    detail = serializers.HyperlinkedIdentityField(
+        view_name = "api-detail",
+        lookup_field = "id",
+        lookup_url_kwarg = "item_id"
+        )
+    class Meta:
+        model = Item
+        fields = ['name', 'detail']
+
+
+
+class ItemDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = '__all__'
